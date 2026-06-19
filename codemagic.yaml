@@ -2,6 +2,8 @@ workflows:
   ios-app-store:
     name: Build and publish iOS app to App Store Connect
     max_build_duration: 120
+    integrations:
+      app_store_connect: app_store   # 👈 link to your integration group
     environment:
       vars:
         APP_IDENTIFIER: "africa.carwashes.noq"
@@ -33,4 +35,4 @@ workflows:
             -exportOptionsPlist ios/exportOptions.plist
     publishing:
       app_store_connect:
-        auth: api_key
+        auth: integration   # 👈 must match the integration above
