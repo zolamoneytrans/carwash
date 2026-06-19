@@ -23,8 +23,9 @@ workflows:
             archive \
             -archivePath "$CM_BUILD_DIR/build/CarWash.xcarchive" \
             DEVELOPMENT_TEAM=$APPLE_TEAM_ID \
-            CODE_SIGN_STYLE=Automatic \
-            -allowProvisioningUpdates
+            CODE_SIGN_STYLE=Manual \
+            PROVISIONING_PROFILE="$PROVISIONING_PROFILE" \
+            PROVISIONING_PROFILE_SPECIFIER="$PROVISIONING_PROFILE_SPECIFIER"
     publishing:
       app_store_connect:
         auth: integration
