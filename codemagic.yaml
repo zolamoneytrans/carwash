@@ -9,13 +9,37 @@ workflows:
         APP_IDENTIFIER: "africa.carwashes.noq"
         APPLE_TEAM_ID: "44Z38W9GRD"
         CERTIFICATE_PASSWORD: $CERTIFICATE_PASSWORD
-        PROVISIONING_PROFILE: $PROVISIONING_PROFILE
+        PROVISIONING_PROFILE_NAME: $PROVISIONING_PROFILE
         PROVISIONING_PROFILE_SPECIFIER: "CarWash_AppStore.mobileprovision"
     scripts:
       - name: Build iOS app archive
         script: |
           set -e
           mkdir -p "$CM_BUILD_DIR/build"
+          
+          # Find provisioning profile in standard location
+          PROFILES_DIR="$HOME/Library/MobileDevice/Provisioning\ Profiles"
+          PROFILE_PATH=""
+          
+          if [ -n "$PROVISIONING_PROFILE_NAME" ]; then
+            # Search for profile matching the name
+            for profile in "$PROFILES_DIR"/*.mobileprovision; do
+              if [ -f "$profile" ] && [[ "$profile" == *"$PROVISIONING_PROFILE_NAME"* ]]; then
+                PROFILE_PATH="$profile"
+                break
+              fi
+            done
+          fi
+          
+          # Extract UUID from the profile if found
+          if [ -n "$PROFILE_PATH" ] && [ -f "$PROFILE_PATH" ]; then
+            PROFILE_UUID=$(security cms -D -i "$PROFILE_PATH" | grep -A 1 "<key>UUID</key>" | tail -1 | sed -E 's/.*<string>(.*)<\/string>/\1/')
+            if [ -n "$PROFILE_UUID" ]; then
+              echo "Found provisioning profile UUID: $PROFILE_UUID"
+              PROVISIONING_PROFILE_SPECIFIER="$PROFILE_UUID"
+            fi
+          fi
+          
           xcodebuild -project ios/CarWash.xcodeproj \
             -scheme CarWash \
             -configuration Release \
@@ -24,7 +48,6 @@ workflows:
             -archivePath "$CM_BUILD_DIR/build/CarWash.xcarchive" \
             DEVELOPMENT_TEAM=$APPLE_TEAM_ID \
             CODE_SIGN_STYLE=Manual \
-            PROVISIONING_PROFILE="$PROVISIONING_PROFILE" \
             PROVISIONING_PROFILE_SPECIFIER="$PROVISIONING_PROFILE_SPECIFIER"
     publishing:
       app_store_connect:
