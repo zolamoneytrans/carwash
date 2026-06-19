@@ -2,12 +2,13 @@ workflows:
   ios-app-store:
     name: Build and publish iOS app to App Store Connect
     max_build_duration: 120
-    integrations:
-      app_store_connect: app_store
     environment:
       vars:
         APP_IDENTIFIER: "africa.carwashes.noq"
         APPLE_TEAM_ID: "44Z38W9GRD"
+        CERTIFICATE_PASSWORD: $CERTIFICATE_PASSWORD
+        PROVISIONING_PROFILE: $PROVISIONING_PROFILE
+        PROVISIONING_PROFILE_SPECIFIER: "CarWash AppStore"
     scripts:
       - name: Build iOS app archive
         script: |
@@ -20,8 +21,11 @@ workflows:
             archive \
             -archivePath "$CM_BUILD_DIR/build/CarWash.xcarchive" \
             DEVELOPMENT_TEAM=$APPLE_TEAM_ID \
-            CODE_SIGN_STYLE=Automatic \
+            CODE_SIGN_STYLE=Manual \
+            PROVISIONING_PROFILE_SPECIFIER="$PROVISIONING_PROFILE_SPECIFIER" \
             -allowProvisioningUpdates
     publishing:
       app_store_connect:
-        auth: integration
+        auth: api_key
+        api_key: $APP_STORE_API_KEY
+        api_issuer: $APP_STORE_ISSUER_ID
