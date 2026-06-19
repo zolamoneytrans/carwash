@@ -33,8 +33,5 @@ workflows:
             -exportOptionsPlist ios/exportOptions.plist
     publishing:
       app_store_connect:
-        api_key:
-          key_id: $APP_STORE_CONNECT_API_KEY_ID
-          issuer_id: $APP_STORE_CONNECT_ISSUER_ID
-        app_id: $APP_IDENTIFIER
+        auth: integration
         submit_for_review: false
