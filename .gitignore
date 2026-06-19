@@ -1,0 +1,31 @@
+# PHP dependencies
+/vendor/
+
+# Runtime files
+/uploads/
+/temp/
+
+# Backup and zipped exports
+*.zip
+*.tar.gz
+*.tgz
+
+# IDE and system files
+.DS_Store
+Thumbs.db
+*.sublime-workspace
+*.sublime-project
+*.vscode/
+
+# Logs and local environment
+*.log
+*.env
+.env.local
+.env.*.local
+
+# Local SSH keys
+drsecret
+drsecret.pub
+
+# Composer
+# (Keep composer.lock in source control so dependencies are consistent.)
