@@ -1,5 +1,5 @@
 workflows:
-  ios-workflow:
+  ios-app-store:
     name: iOS Build & Publish
     integrations:
       app_store_connect: Codemagic
