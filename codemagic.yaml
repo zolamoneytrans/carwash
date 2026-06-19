@@ -1,0 +1,26 @@
+workflows:
+  ios-app-store:
+    name: Build and publish iOS app to App Store Connect
+    max_build_duration: 120
+    environment:
+      vars:
+        APP_IDENTIFIER: "africa.carwashes.noq"
+        APPLE_TEAM_ID: "44Z38W9GRD"
+    scripts:
+      - name: Prepare environment
+        script: |
+          echo "Update this workflow with your actual iOS project settings."
+      - name: Build iOS app
+        script: |
+          # Replace the commands below with your real iOS project build steps.
+          # Example for native Xcode project:
+          # xcodebuild -workspace ios/YourApp.xcworkspace -scheme YourApp -sdk iphoneos -configuration Release archive -archivePath $CM_BUILD_DIR/build/YourApp.xcarchive
+          # xcodebuild -exportArchive -archivePath $CM_BUILD_DIR/build/YourApp.xcarchive -exportPath $CM_BUILD_DIR/build/ios -exportOptionsPlist exportOptions.plist
+          echo "No iOS build steps configured yet."
+    publishing:
+      app_store_connect:
+        api_key:
+          key_id: $APP_STORE_CONNECT_API_KEY_ID
+          issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+        app_id: $APP_IDENTIFIER
+        submit_for_review: false
