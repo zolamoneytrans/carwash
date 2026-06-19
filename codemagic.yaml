@@ -1,54 +1,33 @@
 workflows:
-  ios-app-store:
-    name: Build and publish iOS app to App Store Connect
-    max_build_duration: 120
+  ios-workflow:
+    name: iOS Build & Publish
     integrations:
-      app_store_connect: app_store
+      app_store_connect: Codemagic
+    instance_type: mac_mini_m1
+    max_build_duration: 60
     environment:
-      vars:
-        APP_IDENTIFIER: "africa.carwashes.noq"
-        APPLE_TEAM_ID: "44Z38W9GRD"
-        CERTIFICATE_PASSWORD: $CERTIFICATE_PASSWORD
-        PROVISIONING_PROFILE_NAME: $PROVISIONING_PROFILE
-        PROVISIONING_PROFILE_SPECIFIER: "CarWash_AppStore.mobileprovision"
+      node: latest
+      xcode: latest
+      cocoapods: default
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.zolamoneytrans.app
     scripts:
-      - name: Build iOS app archive
+      - name: Install dependencies
+        script: npm install
+      - name: Sync Capacitor (iOS)
+        script: npx cap sync ios
+      - name: Set up code signing settings on Xcode project
+        script: xcode-project use-profiles
+      - name: Build IPA
         script: |
-          set -e
-          mkdir -p "$CM_BUILD_DIR/build"
-          
-          # Find provisioning profile in standard location
-          PROFILES_DIR="$HOME/Library/MobileDevice/Provisioning\ Profiles"
-          PROFILE_PATH=""
-          
-          if [ -n "$PROVISIONING_PROFILE_NAME" ]; then
-            # Search for profile matching the name
-            for profile in "$PROFILES_DIR"/*.mobileprovision; do
-              if [ -f "$profile" ] && [[ "$profile" == *"$PROVISIONING_PROFILE_NAME"* ]]; then
-                PROFILE_PATH="$profile"
-                break
-              fi
-            done
-          fi
-          
-          # Extract UUID from the profile if found
-          if [ -n "$PROFILE_PATH" ] && [ -f "$PROFILE_PATH" ]; then
-            PROFILE_UUID=$(security cms -D -i "$PROFILE_PATH" | grep -A 1 "<key>UUID</key>" | tail -1 | sed -E 's/.*<string>(.*)<\/string>/\1/')
-            if [ -n "$PROFILE_UUID" ]; then
-              echo "Found provisioning profile UUID: $PROFILE_UUID"
-              PROVISIONING_PROFILE_SPECIFIER="$PROFILE_UUID"
-            fi
-          fi
-          
-          xcodebuild -project ios/CarWash.xcodeproj \
-            -scheme CarWash \
-            -configuration Release \
-            -sdk iphoneos \
-            archive \
-            -archivePath "$CM_BUILD_DIR/build/CarWash.xcarchive" \
-            DEVELOPMENT_TEAM=$APPLE_TEAM_ID \
-            CODE_SIGN_STYLE=Manual \
-            PROVISIONING_PROFILE_SPECIFIER="$PROVISIONING_PROFILE_SPECIFIER"
+          xcode-project build-ipa \
+            --workspace "ios/App/App.xcworkspace" \
+            --scheme "App"
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
     publishing:
       app_store_connect:
         auth: integration
+        submit_to_testflight: true
