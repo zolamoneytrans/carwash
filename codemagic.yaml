@@ -9,8 +9,6 @@ workflows:
         APP_IDENTIFIER: "africa.carwashes.noq"
         APPLE_TEAM_ID: "44Z38W9GRD"
         CERTIFICATE_PASSWORD: $CERTIFICATE_PASSWORD
-        PROVISIONING_PROFILE: $PROVISIONING_PROFILE
-        PROVISIONING_PROFILE_SPECIFIER: "CarWash AppStore"
     scripts:
       - name: Build iOS app archive
         script: |
@@ -23,8 +21,7 @@ workflows:
             archive \
             -archivePath "$CM_BUILD_DIR/build/CarWash.xcarchive" \
             DEVELOPMENT_TEAM=$APPLE_TEAM_ID \
-            CODE_SIGN_STYLE=Manual \
-            PROVISIONING_PROFILE_SPECIFIER="$PROVISIONING_PROFILE_SPECIFIER" \
+            CODE_SIGN_STYLE=Automatic \
             -allowProvisioningUpdates
     publishing:
       app_store_connect:
