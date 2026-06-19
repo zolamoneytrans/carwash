@@ -10,7 +10,7 @@ workflows:
         APPLE_TEAM_ID: "44Z38W9GRD"
         CERTIFICATE_PASSWORD: $CERTIFICATE_PASSWORD
         PROVISIONING_PROFILE: $PROVISIONING_PROFILE
-        PROVISIONING_PROFILE_SPECIFIER: "CarWash AppStore"
+        PROVISIONING_PROFILE_SPECIFIER: "CarWash_AppStore.mobileprovision"
     scripts:
       - name: Build iOS app archive
         script: |
