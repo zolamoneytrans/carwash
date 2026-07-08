@@ -32,8 +32,8 @@ function sendEmail($to, $subject, $body) {
         $mail->isSMTP();
         $mail->Host       = 'smtp-relay.brevo.com';
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'a117cd001@smtp-brevo.com';
-        $mail->Password   = getenv('BREVO_SMTP_PASSWORD') ?: '';
+        $mail->Username   = 'a117cd001@smtp-brevo.com'; 
+        $mail->Password   = 'YOUR_SMTP_PASSWORD_HERE';  
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
         
