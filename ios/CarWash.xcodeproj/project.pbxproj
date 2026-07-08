@@ -73,8 +73,8 @@
         11111111111111111111111G /* Assets.xcassets */,
         11111111111111111111111H /* LaunchScreen.storyboard */,
       );
+      path = CarWash;
       sourceTree = "<group>";
-      name = CarWash;
     };
     111111111111111111111116 /* Products */ = {
       isa = PBXGroup;
