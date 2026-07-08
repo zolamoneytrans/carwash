@@ -9,6 +9,15 @@ workflows:
       vars:
         APPLE_TEAM_ID: "44Z38W9GRD"
     scripts:
+      - name: Set dynamic build number and version for App Store Connect
+        script: |
+          set -e
+          cd ios
+          # Ensure CFBundleVersion is dynamically incremented beyond build number 3 (e.g. $BUILD_NUMBER + 3)
+          TARGET_BUILD_NUMBER=$(($BUILD_NUMBER + 3))
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $TARGET_BUILD_NUMBER" CarWash/Info.plist
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString 1.0" CarWash/Info.plist
+          echo "Dynamically set CFBundleVersion to $TARGET_BUILD_NUMBER and CFBundleShortVersionString to 1.0"
       - name: Build iOS app archive
         script: |
           set -e
